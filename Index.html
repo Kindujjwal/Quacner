@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sleek QR & Barcode Studio</title>
+  
+  <!-- External CDN Dependencies -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <div class="app-viewport">
+    
+    <!-- Toast Popup Notification -->
+    <div id="toast" class="toast">Action completed!</div>
+
+    <!-- Header Bar -->
+    <header class="header">
+      <button class="icon-btn" onclick="toggleMainScreen()" title="Toggle View">
+        <i data-lucide="scan" id="header-left-icon"></i>
+      </button>
+      <div class="header-title" id="header-title">QR & Barcode Studio</div>
+      <a class="icon-btn" href="https://github.com/kindujjwal" target="_blank" title="GitHub Profile">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+    </header>
+
+    <!-- Main Workspace Content Container -->
+    <main class="screen-container">
+
+      <!-- SCREEN 1: SCANNER VIEW -->
+      <section id="scanner-screen" class="screen">
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center;">
+          <div class="scanner-viewfinder">
+            <div class="scanner-corner top-left"></div>
+            <div class="scanner-corner top-right"></div>
+            <div class="scanner-corner bottom-left"></div>
+            <div class="scanner-corner bottom-right"></div>
+            <div class="scan-line"></div>
+            <div id="interactive-reader" style="width: 100%; height: 100%;"></div>
+          </div>
+
+          <!-- Screenshot / Image Upload Option -->
+          <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+            <i data-lucide="image"></i>
+            <span>Scan Image / Screenshot</span>
+          </button>
+          <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="scanImageFile(this)">
+        </div>
+
+        <div style="width: 100%;">
+          <div class="scan-result-card" id="scan-result-card" style="display:none;">
+            <span class="input-label">Scanned Data Output</span>
+            <p id="scanned-text-output" style="font-size: 0.9rem; word-break: break-all; margin-bottom: 14px; color: var(--text-main);"></p>
+            <button class="type-btn active" onclick="copyScannedData()" style="width: 100%; padding: 12px;">Copy Scanned Data</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: GENERATOR VIEW -->
+      <section id="generator-screen" class="screen active">
+        
+        <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+          <!-- Mode Switcher -->
+          <div class="type-switcher">
+            <button class="type-btn active" onclick="setGenMode('qr')">Normal QR</button>
+            <button class="type-btn" onclick="setGenMode('wifi')">WiFi QR</button>
+            <button class="type-btn" onclick="setGenMode('barcode')">Barcode</button>
+          </div>
+
+          <!-- Input Form Card -->
+          <div class="input-card">
+            <div id="form-qr" class="gen-form active">
+              <span class="input-label">Data</span>
+              <input type="text" class="data-input" id="qr-input-text" value="https://www.facebook.com/watch/?v=Ad6g2skVGiM" placeholder="Enter link or text..." oninput="generateCode()">
+            </div>
+
+            <div id="form-wifi" class="gen-form" style="display:none;">
+              <span class="input-label">Network Name (SSID)</span>
+              <input type="text" class="data-input" id="wifi-ssid" placeholder="MyHomeWiFi" oninput="generateCode()">
+              
+              <span class="input-label" style="margin-top: 10px;">Network Password</span>
+              <input type="text" class="data-input" id="wifi-pass" placeholder="Password123" oninput="generateCode()">
+              
+              <span class="input-label" style="margin-top: 10px;">Encryption Type</span>
+              <select class="data-input" id="wifi-type" onchange="generateCode()" style="background: var(--card-inner); color: var(--text-main);">
+                <option value="WPA">WPA / WPA2</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass">None (Open Network)</option>
+              </select>
+            </div>
+
+            <div id="form-barcode" class="gen-form" style="display:none;">
+              <span class="input-label">Barcode Numbers / Text</span>
+              <input type="text" class="data-input" id="barcode-input-text" value="1234567890" placeholder="123456..." oninput="generateCode()">
+            </div>
+          </div>
+
+          <!-- Color Pickers -->
+          <div class="customization-row">
+            <label class="color-picker-label">
+              Code: <input type="color" id="code-color" value="#121316" onchange="generateCode()">
+            </label>
+            <label class="color-picker-label">
+              Background: <input type="color" id="bg-color" value="#ffffff" onchange="generateCode()">
+            </label>
+          </div>
+        </div>
+
+        <div class="preview-wrapper">
+          <!-- Code Preview Render Card -->
+          <div class="code-preview-card" id="generator-preview-box"></div>
+
+          <!-- Perfectly Aligned Action Buttons (Save & Copy) -->
+          <div class="action-row">
+            <button class="action-btn" onclick="downloadCode()" title="Save PNG">
+              <i data-lucide="save"></i>
+            </button>
+            <button class="action-btn" onclick="copyCodeData()" title="Copy Data">
+              <i data-lucide="copy"></i>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SCREEN 3: HISTORY VIEW -->
+      <section id="history-screen" class="screen">
+        <div class="full-grid-width" style="width: 100%;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Saved Code History</span>
+            <button onclick="clearHistory()" style="background:none; border:none; color: var(--accent-yellow); font-size: 0.8rem; cursor: pointer;">Clear Log</button>
+          </div>
+          <div id="history-container" class="history-list">
+            <!-- Dynamically populated history items -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Curved Bottom Navigation Bar Dock -->
+    <nav class="bottom-dock-wrapper">
+      <div class="dock-container">
+        <svg class="dock-svg-bg" viewBox="0 0 420 80" preserveAspectRatio="none">
+          <path d="M 0,80 L 0,20 Q 0,0 20,0 L 140,0 C 160,0 165,38 210,38 C 255,38 260,0 280,0 L 400,0 Q 420,0 420,20 L 420,80 Z" />
+        </svg>
+        
+        <div class="dock-items">
+          <button class="dock-tab active" id="tab-generator" onclick="switchTab('generator')">
+            <i data-lucide="qr-code"></i>
+            <span style="font-size: 0.6rem;">Studio</span>
+          </button>
+
+          <button class="floating-scan-trigger" onclick="switchTab('scanner')" title="Open Scanner">
+            <i data-lucide="scan" style="width: 26px; height: 26px;"></i>
+          </button>
+
+          <button class="dock-tab" id="tab-history" onclick="switchTab('history')">
+            <i data-lucide="history"></i>
+            <span style="font-size: 0.6rem;">History</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script src="./js/app.js"></script>
+</body>
+</html>
