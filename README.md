@@ -6,10 +6,8 @@ Quacner lets you make QR codes and barcodes, scan them with your camera, and
 save them to your phone. It works for links, plain text, and WiFi details.
 
 # Screenshots
-<img width="720" height="1520" alt="WhatsApp Image 2026-10-15 at 6 06 26 AMg" src="https://github.com/user-attachments/assets/3f9504c4-5ebf-4ca7-9b8e-f21a614a557c" />
-<img width="606" height="1280" alt="WhatsApp Image 2026-10-15 at 6 06 26 AM" src="https://github.com/user-attachments/assets/be0b4290-0b9f-42c9-b237-221f4499ab71" />
-<img width="720" height="1520" alt="WhatsApp Image 2026-10-15 at 6 06 25 AM" src="https://github.com/user-attachments/assets/b9807675-3515-48ef-a981-a8e2680bb661" />
-<img width="720" height="1520" alt="WhatsApp Image 2026-10-15 at 6 06 24 AM" src="https://github.com/user-attachments/assets/4213ece5-d7ce-442c-8ed3-a19ab5d775b1" />
+<img width="728" height="385" alt="image" src="https://github.com/user-attachments/assets/138a7a85-4302-4fc5-8634-4e9c3b20bba1" />
+
 
 
 ## What you can do
