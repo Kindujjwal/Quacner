@@ -23,7 +23,7 @@ save them to your phone. It works for links, plain text, and WiFi details.
 ## How to install
 
 1. Copy the Quacner app file to your phone.
-2. Tap it. If your phone asks, allow installing apps from this source.
+2. Tap it. If your Camera asks, allow installing apps from this source.
 3. Tap **Install**.
 4. Open **Quacner** from your apps.
 
